@@ -35,3 +35,31 @@ def insert_event(event):
 
     except Exception as e:
         print(f"❌ DB Error: {e}")
+        
+def get_events():
+    try:
+        conn = psycopg2.connect(DATABASE_URL)
+        cursor = conn.cursor()
+
+        query = "SELECT lat, lng, risk_score FROM events;"
+        cursor.execute(query)
+
+        rows = cursor.fetchall()
+
+        cursor.close()
+        conn.close()
+
+        events = []
+
+        for row in rows:
+            events.append({
+                "lat": row[0],
+                "lng": row[1],
+                "risk_score": row[2]
+            })
+
+        return events
+
+    except Exception as e:
+        print(f"❌ DB Fetch Error: {e}")
+        return []
