@@ -8,33 +8,36 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 
 
 def insert_event(event):
+    import psycopg2
+    from datetime import datetime
+
     try:
         conn = psycopg2.connect(DATABASE_URL)
         cursor = conn.cursor()
 
-        query = """
-        INSERT INTO events (type, value, risk_score, country, lat, lng, timestamp)
-        VALUES (%s, %s, %s, %s, %s, %s, %s)
-        """
+        print("📦 INSERT DATA:", event)
 
-        cursor.execute(query, (
-            event["type"],
-            event["value"],
-            event["risk_score"],
-            event["country"],
-            event["lat"],
-            event["lng"],
-            event["timestamp"]
+        cursor.execute("""
+            INSERT INTO events (type, value, risk_score, country, lat, lng, timestamp)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """, (
+            event.get("type"),
+            event.get("value"),
+            event.get("risk_score"),
+            event.get("country"),
+            event.get("lat"),
+            event.get("lng"),
+            datetime.utcnow()
         ))
 
         conn.commit()
+        print("✅ FULL INSERT SUCCESS")
+
         cursor.close()
         conn.close()
 
-        print("✅ Event stored in database")
-
     except Exception as e:
-        print(f"❌ DB Error: {e}")
+        print("❌ DB INSERT FAILED:", e)
         
 def get_events():
     try:

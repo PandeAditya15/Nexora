@@ -36,5 +36,5 @@ def run_pipeline(ip: str):
 
 # 🔹 Entry point
 if __name__ == "__main__":
-    ip = "117.200.0.0"  # change this for testing
+    ip = "45.95.147.236"  # change this for testing
     run_pipeline(ip)
